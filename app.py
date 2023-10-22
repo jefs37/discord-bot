@@ -98,4 +98,8 @@ async def get_user_id(ctx, user: discord.User):
     user_id = user.id
     await ctx.send(f"The user's ID is {user_id}")
 
-bot.run("MTE2NDM4NzI3MDQzOTIwNjkxMg.GGlXFR.RWCo6RIH514_bHsM5hAmVw_syVQ3VgaAqMb-Jw")
+#use private token to run the application
+with open('token.txt') as f:
+    token = f.readlines()
+
+bot.run(token)
