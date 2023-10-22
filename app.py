@@ -100,6 +100,7 @@ async def get_user_id(ctx, user: discord.User):
 
 #use private token to run the application
 with open('token.txt') as f:
-    token = f.readlines()
+    token = f.read()
 
+print(token)
 bot.run(token)
