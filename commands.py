@@ -1,8 +1,11 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
+from datetime import datetime, timedelta
 import numpy as np
 import pandas as pd
 from data_structures import *
+import random
+import asyncio
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -13,8 +16,28 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 user_array = []
 
+fun_facts = [
+    "The Eiffel Tower can be 15 cm taller during the summer, due to thermal expansion of the metal.",
+    "Cows have best friends and can become stressed when they are separated.",
+    "The world's largest desert is not the Sahara, but Antarctica.",
+    "Honey never spoils. Archaeologists have found pots of honey in ancient Egyptian tombs that are over 3,000 years old and still perfectly edible!",
+    "A group of flamingos is called a 'flamboyance'.",
+    "The national animal of Scotland is the unicorn.",
+    "Bananas are berries, but strawberries aren't.",
+    "The first oranges weren't orange. The original oranges from Southeast Asia were a tangerine-pomelo hybrid, and they were actually green.",
+    "Octopuses have three hearts.",
+    "A day on Venus is longer than a year on Venus.",
+    "The longest English word without a vowel is 'rhythms'.",
+    "A strawberry is not an actual berry, but a banana is.",
+    "The shortest war in history was between Britain and Zanzibar on August 27, 1896. Zanzibar surrendered after 38 minutes.",
+    "Hippopotomonstrosesquippedaliophobia is the fear of long words.",
+    "The human brain has a storage capacity of about 2.5 petabytes (or 2.5 million gigabytes).",
+    "The unicorn is the national animal of Scotland.",
+]
+
 @bot.event
 async def on_ready():
+    send_motivational_message.start()
     try:
         df = pd.read_csv('user_data.csv')
         for index, row in df.iterrows():
@@ -39,7 +62,7 @@ async def on_shutdown():
 @bot.event
 async def on_message(message):
     # Check if the message author is the user you want to respond to
-    if message.author.id == 177185585012670464 and np.random.rand() < 0.5:
+    if message.author.id == 177185585012670464 and np.random.rand() < 1:
         response = "jon ur a rat"
         await message.channel.send(response)
 
@@ -54,9 +77,42 @@ async def on_message(message):
         await message.channel.send(f"hi")
     await bot.process_commands(message)
 
+@tasks.loop(minutes=30)
+async def send_motivational_message():
+    # Get a random motivational message
+    message = "hiiii"
+    
+    channel = bot.get_channel(818302573392035873)
+    user = bot.get_user(231592145490804737)
+    print('message sent')
+    
+    # Send the message
+    await user.send(message)
+
+#@tasks.loop(minutes=1)
+#async def send_daily_motivational_message():
+    # Get current time
+    #now = datetime.now()
+    
+    # Define the time to send the message (adjust this as needed)
+    #send_time = now.replace(hour=9, minute=0, second=0, microsecond=0)  # Send at 9:00 AM
+    
+    # Calculate time until next send
+    #time_until_send = send_time - now
+    
+    # If the time is negative (past the send time), set it to 24 hours from now
+    #if time_until_send.total_seconds() < 0:
+    #    time_until_send += timedelta(days=1)
+    
+    # Wait until it's time to send the message
+    #await asyncio.sleep(time_until_send.total_seconds())
+    
+    # Send the motivational message
+#    await send_motivational_message()
+
 #Read csv to create a dataframe of UserData struct which contains name, ID, balances
 @bot.command()
-async def show_server_bal(ctx):
+async def server_bal(ctx):
     user_data = ""
     for user in user_array:
         user_data += str(user) + "\n"
@@ -124,6 +180,10 @@ async def unmute(ctx, member: discord.Member):
 async def get_user_id(ctx, user: discord.User):
     user_id = user.id
     await ctx.send(f"The user's ID is {user_id}")
+
+@bot.command()
+async def zed(ctx):
+    await ctx.send(f"https://www.reddit.com/r/leagueoflegends/comments/187xpv5/riot_august_zed_is_weak_and_will_be_intentionally/")
 
 @bot.command()
 async def stop(ctx):
