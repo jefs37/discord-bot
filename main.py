@@ -25,14 +25,22 @@ async def on_shutdown():
 
 @bot.event
 async def on_message(message):
-    # Check if the message author is the user you want to respond to
+    if message.author == bot.user:
+        return
+
+    # message Jon specifically
     if message.author.id == 177185585012670464 and np.random.rand() < 1:
         response = "jon ur a rat"
         await message.channel.send(response)
 
+    if 'a' in message.content.lower():
+        message_J = message.content.replace('A', 'J').replace('a', 'j')
+        await message.channel.send('Did you mean to type: ' + message_J)
+
     # Include this line to allow other event handlers to process the message
     await bot.process_commands(message)
 
+# mute and unmute
 @bot.command()
 async def mute(ctx, member: discord.Member):
     # Check if the bot has the necessary permissions
@@ -54,6 +62,7 @@ async def unmute(ctx, member: discord.Member):
     else:
         await ctx.send("You don't have permission to use this command.")
 
+# get user ID
 @bot.command()
 async def get_user_id(ctx, user: discord.User):
     user_id = user.id
